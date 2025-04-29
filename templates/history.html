@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>歷史照片紀錄</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; background: #f0f0f0; text-align: center; }
+    h2 { margin-top: 1rem; }
+    #photoGrid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+      gap: 10px; 
+      padding: 1rem; 
+    }
+    img { width: 100%; border-radius: 10px; cursor: pointer; }
+    #backBtn {
+      margin: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>歷史照片紀錄</h2>
+  <div id="photoGrid"></div>
+  <button id="backBtn">返回拍照頁</button>
+
+  <script>
+    const photoGrid = document.getElementById("photoGrid");
+    const backBtn = document.getElementById("backBtn");
+
+    // 抓取所有上傳過的照片
+    fetch("/photos")  // 🔥改這裡
+  .then(response => response.json())
+  .then(urls => {
+    if (urls.length === 0) {
+      photoGrid.innerHTML = "<p>目前沒有拍攝任何照片。</p>";
+      return;
+    }
+    urls.forEach(url => {
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "舌苔照片";
+      img.onclick = () => window.open(url, '_blank');
+      photoGrid.appendChild(img);
+    });
+  })
+  .catch(error => {
+    console.error("讀取照片失敗：", error);
+    photoGrid.innerHTML = "<p>❌ 無法載入照片</p>";
+  });
+
+backBtn.addEventListener("click", () => {
+  window.location.href = "/";
+});
+  </script>
+</body>
+</html>
