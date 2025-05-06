@@ -46,8 +46,10 @@
 </head>
 <body>
   <h2>歷史照片紀錄</h2>
+
   <div id="controls">
-    <input id="patientInput" placeholder="請輸入病患 ID" />
+    <input id="patientInput" list="patientList" placeholder="請輸入病患 ID" />
+    <datalist id="patientList"></datalist>
     <button id="loadBtn">載入照片</button>
     <button id="backBtn">返回拍照頁</button>
   </div>
@@ -59,7 +61,24 @@
     const photoGrid = document.getElementById("photoGrid");
     const loadBtn = document.getElementById("loadBtn");
     const backBtn = document.getElementById("backBtn");
+    const datalist = document.getElementById("patientList");
 
+    // 🚀 自動取得病患 ID 選單
+    fetch("/patients")
+      .then(res => res.json())
+      .then(patientList => {
+        datalist.innerHTML = "";
+        patientList.forEach(id => {
+          const option = document.createElement("option");
+          option.value = id;
+          datalist.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.warn("❌ 無法載入病患列表", err);
+      });
+
+    // 點擊查詢按鈕：讀取該病患照片
     loadBtn.addEventListener("click", () => {
       const patientId = patientInput.value.trim();
       if (!patientId) {
@@ -92,11 +111,12 @@
         });
     });
 
+    // 返回首頁
     backBtn.addEventListener("click", () => {
       window.location.href = "/";
     });
 
-    // 若網址中已有 patient=xxx 自動載入
+    // 自動填入網址參數中的 patient ID（若有）
     const urlParams = new URLSearchParams(window.location.search);
     const presetId = urlParams.get("patient");
     if (presetId) {
