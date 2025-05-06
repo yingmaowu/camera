@@ -33,9 +33,6 @@ def upload_image():
 
     return f"Uploaded {filename}", 200
 
-
-
-# 列出歷史照片
 @app.route("/photos", methods=["GET"])
 def list_photos():
     patient_id = request.args.get("patient", "").strip()
@@ -50,12 +47,22 @@ def list_photos():
     urls = [f"/uploads/{patient_id}/{fname}" for fname in files]
     return jsonify(urls)
 
-
-# 顯示上傳的圖片
 @app.route("/uploads/<patient>/<filename>")
 def uploaded_file(patient, filename):
     folder = os.path.join(UPLOAD_FOLDER, patient)
     return send_from_directory(folder, filename)
+
+# ✅ 新增 API：列出目前所有病患 ID（即資料夾名稱）
+@app.route("/patients", methods=["GET"])
+def list_patients():
+    try:
+        folders = [
+            name for name in os.listdir(UPLOAD_FOLDER)
+            if os.path.isdir(os.path.join(UPLOAD_FOLDER, name))
+        ]
+        return jsonify(sorted(folders))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
