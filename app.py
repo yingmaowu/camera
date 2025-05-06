@@ -63,6 +63,20 @@ def list_patients():
         return jsonify(sorted(folders))
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@app.route("/admin")
+def admin_page():
+    patients = []
+    for name in os.listdir(UPLOAD_FOLDER):
+        folder_path = os.path.join(UPLOAD_FOLDER, name)
+        if os.path.isdir(folder_path):
+            files = sorted(os.listdir(folder_path), reverse=True)
+            photos = [f"/uploads/{name}/{f}" for f in files]
+            patients.append({
+                "id": name,
+                "count": len(photos),
+                "photos": photos
+            })
+    return render_template("admin.html", patients=patients)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
