@@ -6,17 +6,14 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# 首頁 - index.html
 @app.route("/")
 def home():
     return render_template("index.html")
 
-# 查看歷史照片 - history.html
 @app.route("/history")
 def history():
     return render_template("history.html")
 
-# 上傳照片
 @app.route("/upload", methods=["POST"])
 def upload_image():
     if 'image' not in request.files:

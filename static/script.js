@@ -25,10 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 上傳圖片
-  // 上傳圖片
 document.getElementById("upload").addEventListener("click", () => {
   if (!dataURL) {
-    alert("請先拍照！");
+    alert("請先拍照！");git add .
     return;
   }
 
