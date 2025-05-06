@@ -61,4 +61,6 @@ def list_photos():
 def uploaded_file(patient, filename):
     folder = os.path.join(UPLOAD_FOLDER, patient)
     return send_from_directory(folder, filename)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, debug=True)
 
