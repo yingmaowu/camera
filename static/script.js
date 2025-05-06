@@ -25,21 +25,29 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 上傳圖片
-  document.getElementById("upload").addEventListener("click", () => {
-    if (!dataURL) {
-      alert("請先拍照！");
-      return;
-    }
+  // 上傳圖片
+document.getElementById("upload").addEventListener("click", () => {
+  if (!dataURL) {
+    alert("請先拍照！");
+    return;
+  }
 
-    fetch("upload.php", {
-      method: "POST",
-      body: JSON.stringify({ image: dataURL }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(res => res.text())
-    .then(msg => alert("✅ 上傳成功：" + msg))
-    .catch(err => alert("❌ 上傳錯誤：" + err));
-  });
+  const patientId = document.getElementById("patientId").value.trim();
+  if (!patientId) {
+    alert("❗ 請輸入病人 ID");
+    return;
+  }
+
+  fetch("upload.php", {
+    method: "POST",
+    body: JSON.stringify({ image: dataURL, patient: patientId }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => res.text())
+  .then(msg => alert("✅ 上傳成功：" + msg))
+  .catch(err => alert("❌ 上傳錯誤：" + err));
+});
+
 });

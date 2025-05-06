@@ -1,17 +1,25 @@
 <?php
 $data = json_decode(file_get_contents("php://input"), true);
-if (!$data || !isset($data['image'])) {
-    echo "無效圖片資料";
-    exit;
+$image = $data['image'];
+$patient = $data['patient'];
+
+if (!$image || !$patient) {
+  http_response_code(400);
+  echo "缺少影像或病人ID";
+  exit;
 }
 
-$image = $data['image'];
-$image = str_replace('data:image/png;base64,', '', $image);
-$image = str_replace(' ', '+', $image);
-$imageData = base64_decode($image);
+// 建立資料夾
+$folder = "uploads/" . $patient;
+if (!file_exists($folder)) {
+  mkdir($folder, 0777, true);
+}
 
-$filename = 'uploads/photo_' . time() . '.png';
-file_put_contents($filename, $imageData);
+// 儲存圖片
+$imageData = explode(",", $image)[1];  // 去掉 data:image/png;base64,...
+$imageBinary = base64_decode($imageData);
+$filename = $folder . "/tongue_" . date("YmdHis") . ".png";
+file_put_contents($filename, $imageBinary);
 
-echo "圖片已儲存：" . $filename;
+echo "儲存成功：" . basename($filename);
 ?>
