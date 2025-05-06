@@ -19,25 +19,20 @@ def upload_image():
     if 'image' not in request.files:
         return "No image uploaded", 400
     image = request.files['image']
-    if image.filename == '':
-        return "No selected file", 400
-
-    # 🔺從這裡開始：新增讀取病人 ID
     patient_id = request.form.get('patient_id', '').strip()
     if not patient_id:
         return "Missing patient ID", 400
 
-    # 建立病人專屬資料夾
     patient_folder = os.path.join(UPLOAD_FOLDER, patient_id)
     os.makedirs(patient_folder, exist_ok=True)
 
-    # 儲存檔案
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     filename = f"{patient_id}_{timestamp}.jpg"
     filepath = os.path.join(patient_folder, filename)
     image.save(filepath)
 
     return f"Uploaded {filename}", 200
+
 
 
 # 列出歷史照片
@@ -62,3 +57,5 @@ def uploaded_file(patient, filename):
     folder = os.path.join(UPLOAD_FOLDER, patient)
     return send_from_directory(folder, filename)
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, debug=True)
