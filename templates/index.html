@@ -19,8 +19,12 @@
     <canvas id="overlay"></canvas>
   </div>
   <div>
-    <button id="captureBtn">拍照並上傳</button>
-    <button id="historyBtn">查看歷史照片</button>
+    <div>
+      <input id="patientId" placeholder="請輸入病患 ID" style="font-size:1rem; padding:0.4rem;" />
+      <button id="captureBtn">拍照並上傳</button>
+      <button id="historyBtn">查看歷史照片</button>
+    </div>
+    
   </div>
 
   <script>
@@ -79,29 +83,37 @@
     }
 
     captureBtn.addEventListener("click", () => {
+  const patientId = document.getElementById("patientId").value.trim();
+  if (!patientId) {
+    alert("❗ 請先輸入病患 ID");
+    return;
+  }
+
   const snap = document.createElement("canvas");
   snap.width = video.videoWidth;
   snap.height = video.videoHeight;
 
   const ctx = snap.getContext("2d");
-  ctx.drawImage(video, 0, 0);       // 畫 video 畫面
-  ctx.drawImage(canvas, 0, 0);      // 疊上 canvas 畫面（有九宮格）
+  ctx.drawImage(video, 0, 0);      // 拍攝影像
+  ctx.drawImage(canvas, 0, 0);     // 疊加九宮格
 
   snap.toBlob(blob => {
     const formData = new FormData();
     formData.append("image", blob);
+    formData.append("patient_id", patientId);  // 傳送 ID
 
     fetch("/upload", { method: "POST", body: formData })
       .then(res => res.text())
       .then(msg => {
         alert("✅ 上傳成功！");
-        window.location.href = "/history";
+        window.location.href = `/history?patient=${patientId}`;
       })
       .catch(err => {
         alert("❌ 上傳失敗：" + err.message);
       });
   }, "image/jpeg");
 });
+
 
 
 historyBtn.addEventListener("click", () => {
