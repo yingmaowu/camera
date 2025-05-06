@@ -82,7 +82,10 @@
   const snap = document.createElement("canvas");
   snap.width = video.videoWidth;
   snap.height = video.videoHeight;
-  snap.getContext("2d").drawImage(video, 0, 0);
+
+  const ctx = snap.getContext("2d");
+  ctx.drawImage(video, 0, 0);       // 畫 video 畫面
+  ctx.drawImage(canvas, 0, 0);      // 疊上 canvas 畫面（有九宮格）
 
   snap.toBlob(blob => {
     const formData = new FormData();
@@ -90,15 +93,16 @@
 
     fetch("/upload", { method: "POST", body: formData })
       .then(res => res.text())
-      .then(msg => { 
-          alert("✅ 上傳成功！");
-          window.location.href = "/history";  // 🔥改這裡
+      .then(msg => {
+        alert("✅ 上傳成功！");
+        window.location.href = "/history";
       })
-      .catch(err => { 
-          alert("❌ 上傳失敗：" + err.message); 
+      .catch(err => {
+        alert("❌ 上傳失敗：" + err.message);
       });
   }, "image/jpeg");
 });
+
 
 historyBtn.addEventListener("click", () => {
   window.location.href = "/history";  // 🔥改這裡
