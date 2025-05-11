@@ -35,6 +35,13 @@
 
     let snapshotBlob = null;
 
+    // 自動從網址讀取 patient 參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const presetId = urlParams.get("patient");
+    if (presetId) {
+      patientInput.value = presetId;
+    }
+
     // 啟動相機
     navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
       .then(stream => {
@@ -100,7 +107,7 @@
 
       snap.toBlob(blob => {
         snapshotBlob = blob;
-        alert("📸 拍照完成，請輸入病患 ID 並上傳！");
+        alert("📸 拍照完成，請確認病患 ID 並上傳！");
       }, "image/jpeg");
     });
 
