@@ -99,6 +99,11 @@ def validate_patient():
         "created": created
     })
 
+@app.route("/dashboard")
+def dashboard():
+    patient_id = request.args.get("patient", "").strip()
+    return render_template("dashboard.html", patient=patient_id)
+
 
 import os
 
