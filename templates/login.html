@@ -1,48 +1,33 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>病患登入</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>病患功能選單</title>
   <style>
-    body { font-family: sans-serif; background: #f0f0f0; text-align: center; padding-top: 5rem; }
-    input, button {
+    body { font-family: sans-serif; text-align: center; background: #f0f0f0; padding-top: 3rem; }
+    h2 { margin-bottom: 1rem; }
+    button {
       font-size: 1.2rem;
-      padding: 0.5rem;
-      margin: 0.5rem;
+      padding: 1rem 2rem;
+      margin: 1rem;
     }
   </style>
 </head>
 <body>
-  <h2>請輸入病患 ID</h2>
-  <input type="text" id="patientId" placeholder="例如 amy123" />
-  <br />
-  <button onclick="next()">下一步</button>
+  <h2>病患 ID：<span id="patientName"></span></h2>
+  <button onclick="goCamera()">📸 拍攝舌苔照片</button>
+  <button onclick="goHistory()">🖼 查詢歷史照片</button>
 
   <script>
-    function next() {
-      const id = document.getElementById("patientId").value.trim();
-      if (!id) {
-        alert("請輸入病患 ID");
-        return;
-      }
+    const patientId = new URLSearchParams(window.location.search).get("patient");
+    document.getElementById("patientName").textContent = patientId;
 
-      const formData = new FormData();
-      formData.append("patient_id", id);
-
-      fetch("/validate_patient", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.created) {
-          alert(`⚠️ 無該病患 ID，已自動為您新增 ${data.patient_id}`);
-        }
-        window.location.href = `/dashboard?patient=${data.patient_id}`;
-      })
-      .catch(err => {
-        alert("錯誤：" + err);
-      });
+    function goCamera() {
+      window.location.href = `/?patient=${patientId}`;
+    }
+    function goHistory() {
+      window.location.href = `/history?patient=${patientId}`;
     }
   </script>
 </body>
