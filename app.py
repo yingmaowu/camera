@@ -52,7 +52,6 @@ def uploaded_file(patient, filename):
     folder = os.path.join(UPLOAD_FOLDER, patient)
     return send_from_directory(folder, filename)
 
-# ✅ 新增 API：列出目前所有病患 ID（即資料夾名稱）
 @app.route("/patients", methods=["GET"])
 def list_patients():
     try:
@@ -63,6 +62,7 @@ def list_patients():
         return jsonify(sorted(folders))
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 @app.route("/admin")
 def admin_page():
     patients = []
@@ -103,9 +103,6 @@ def validate_patient():
 def dashboard():
     patient_id = request.args.get("patient", "").strip()
     return render_template("dashboard.html", patient=patient_id)
-
-
-import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
