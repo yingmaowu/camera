@@ -78,6 +78,28 @@ def admin_page():
             })
     return render_template("admin.html", patients=patients)
 
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/validate_patient", methods=["POST"])
+def validate_patient():
+    patient_id = request.form.get("patient_id", "").strip()
+    if not patient_id:
+        return "Missing ID", 400
+
+    patient_folder = os.path.join(UPLOAD_FOLDER, patient_id)
+    created = False
+    if not os.path.exists(patient_folder):
+        os.makedirs(patient_folder)
+        created = True
+
+    return jsonify({
+        "patient_id": patient_id,
+        "created": created
+    })
+
+
 import os
 
 if __name__ == "__main__":
