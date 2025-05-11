@@ -19,10 +19,11 @@
     <canvas id="overlay"></canvas>
   </div>
   <div>
-    <button id="captureBtn">拍照</button>
+    <button id="captureBtn">📸 拍照</button>
     <input id="patientId" placeholder="請輸入病患 ID" />
-    <button id="uploadBtn">上傳圖片</button>
-    <button id="historyBtn">查看歷史照片</button>
+    <button id="uploadBtn">📤 上傳圖片</button>
+    <button id="historyBtn">🖼 查看歷史照片</button>
+    <button id="dashboardBtn">📁 返回功能選單</button>
   </div>
 
   <script>
@@ -31,18 +32,17 @@
     const captureBtn = document.getElementById("captureBtn");
     const uploadBtn = document.getElementById("uploadBtn");
     const historyBtn = document.getElementById("historyBtn");
+    const dashboardBtn = document.getElementById("dashboardBtn");
     const patientInput = document.getElementById("patientId");
 
     let snapshotBlob = null;
 
-    // 自動從網址讀取 patient 參數
     const urlParams = new URLSearchParams(window.location.search);
     const presetId = urlParams.get("patient");
     if (presetId) {
       patientInput.value = presetId;
     }
 
-    // 啟動相機
     navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
       .then(stream => {
         video.srcObject = stream;
@@ -134,6 +134,12 @@
       const patientId = patientInput.value.trim();
       if (!patientId) return alert("請先輸入病患 ID");
       window.location.href = `/history?patient=${patientId}`;
+    });
+
+    dashboardBtn.addEventListener("click", () => {
+      const patientId = patientInput.value.trim();
+      if (!patientId) return alert("請先輸入病患 ID");
+      window.location.href = `/dashboard?patient=${patientId}`;
     });
   </script>
 </body>
