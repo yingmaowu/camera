@@ -22,7 +22,7 @@
       padding: 0.4rem;
       width: 200px;
     }
-    #loadBtn, #backBtn {
+    #loadBtn, #backBtn, #dashboardBtn {
       padding: 0.5rem 1rem;
       font-size: 1rem;
       margin-left: 0.5rem;
@@ -52,6 +52,7 @@
     <datalist id="patientList"></datalist>
     <button id="loadBtn">載入照片</button>
     <button id="backBtn">返回拍照頁</button>
+    <button id="dashboardBtn">📁 返回功能選單</button>
   </div>
 
   <div id="photoGrid"></div>
@@ -61,9 +62,9 @@
     const photoGrid = document.getElementById("photoGrid");
     const loadBtn = document.getElementById("loadBtn");
     const backBtn = document.getElementById("backBtn");
+    const dashboardBtn = document.getElementById("dashboardBtn");
     const datalist = document.getElementById("patientList");
 
-    // 🚀 自動取得病患 ID 選單
     fetch("/patients")
       .then(res => res.json())
       .then(patientList => {
@@ -78,7 +79,6 @@
         console.warn("❌ 無法載入病患列表", err);
       });
 
-    // 點擊查詢按鈕：讀取該病患照片
     loadBtn.addEventListener("click", () => {
       const patientId = patientInput.value.trim();
       if (!patientId) {
@@ -111,12 +111,18 @@
         });
     });
 
-    // 返回首頁
     backBtn.addEventListener("click", () => {
-      window.location.href = "/";
+      const patientId = patientInput.value.trim();
+      if (!patientId) return alert("請先輸入病患 ID");
+      window.location.href = `/?patient=${patientId}`;
     });
 
-    // 自動填入網址參數中的 patient ID（若有）
+    dashboardBtn.addEventListener("click", () => {
+      const patientId = patientInput.value.trim();
+      if (!patientId) return alert("請先輸入病患 ID");
+      window.location.href = `/dashboard?patient=${patientId}`;
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const presetId = urlParams.get("patient");
     if (presetId) {
